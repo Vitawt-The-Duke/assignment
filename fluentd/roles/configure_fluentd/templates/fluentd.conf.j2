@@ -1,0 +1,39 @@
+<source>
+  @type tail
+  path /var/log/nginx/access.log,/var/log/nginx/error.log
+  pos_file /var/log/fluent/nginx/nginx.pos
+  tag nginx
+  format nginx
+</source>
+
+<filter nginx>
+  @type grep
+  <exclude>
+    key "remote"
+    pattern_file "/etc/fluent/denylist.txt"
+  </exclude>
+</filter>
+
+<match nginx>
+  @type file
+  path /var/log/fluent/nginx_logs.json
+  <buffer>
+    path /var/log/fluent/buffer/nginx_logs
+    flush_interval 5s
+    chunk_limit_size 8MB
+    queue_limit_length 1024
+    retry_forever true
+  </buffer>
+</match>
+
+<match nginx.denylist>
+  @type file
+  path /var/log/fluent/denylist_audit.log
+  <buffer>
+    path /var/log/fluent/buffer/denylist_audit
+    flush_interval 5s
+    chunk_limit_size 8MB
+    queue_limit_length 1024
+    retry_forever true
+  </buffer>
+</match>

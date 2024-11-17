@@ -1,0 +1,51 @@
+---
+- name: Create Fluentd configuration directory if it doesn't exist
+  file:
+    path: /etc/fluent
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: '0755'
+
+- name: Upload denylist file
+  copy:
+    src: denylist.txt
+    dest: /etc/fluent/denylist.txt
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: '0644'
+
+- name: Upload Fluentd configuration file
+  template:
+    src: fluentd.conf.j2
+    dest: /etc/fluent/fluentd.conf
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: '0644'
+
+- name: Combine denylist patterns into a single string
+  command: paste -sd '|' /etc/fluent/denylist.txt
+  register: denylist_patterns
+  changed_when: false
+
+- name: Update Fluentd configuration with denylist patterns
+  lineinfile:
+    path: /etc/fluent/fluentd.conf
+    regexp: 'pattern_file.*'
+    line: "pattern \"{{ denylist_patterns.stdout }}\""
+  when: denylist_patterns.stdout != ""
+
+- name: Validate Fluentd configuration
+  command: "/usr/local/bin/fluentd --dry-run -c /etc/fluent/fluentd.conf"
+  register: validate_fluentd
+  failed_when: validate_fluentd.rc != 0
+  changed_when: false
+
+- name: Debug Fluentd configuration validation
+  debug:
+    msg: "{{ validate_fluentd.stdout }}"
+
+- name: Restart Fluentd service
+  service:
+    name: fluentd
+    state: restarted

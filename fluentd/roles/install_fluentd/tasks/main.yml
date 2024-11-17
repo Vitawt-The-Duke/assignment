@@ -1,0 +1,72 @@
+---
+- name: Install necessary dependencies
+  apt:
+    name:
+      - curl
+      - gnupg
+      - ruby-full
+      - build-essential
+      - zip
+    state: present
+    update_cache: false
+
+- name: Install Fluentd gem
+  shell: |
+    gem install fluentd --no-doc
+  args:
+    executable: /bin/bash
+
+- name: Check Fluentd binary
+  shell: |
+    if command -v fluentd; then
+      echo "installed";
+    else
+      echo "missing";
+    fi
+  register: fluentd_check
+  changed_when: false
+
+- name: Make log folder and grant permissions for the log files with adding ansible_user to the adm group
+  shell: |
+    mkdir -p /var/log/fluent
+    chmod 0755 /var/log/fluent
+    chown {{ ansible_user }}:root /var/log/fluent
+    chgrp adm /var/log/nginx/*.log
+    chmod g+r /var/log/nginx/*.log
+    usermod -aG adm {{ ansible_user }}
+
+
+- name: Create Fluentd systemd service file #group adm for access to the nginx logs
+  copy:
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: '0644'
+    dest: /etc/systemd/system/fluentd.service
+    content: |
+      [Unit]
+      Description=Fluentd: Data Collector
+      Documentation=https://docs.fluentd.org/
+      After=network.target
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/local/bin/fluentd -c /etc/fluent/fluentd.conf --log /var/log/fluent/fluentd.log
+      Restart=always
+      RestartSec=5
+      User={{ ansible_user }}
+      Group=adm
+      UMask=0027
+      #WorkingDirectory=/var/lib/fluent
+      Environment=FLUENTD_CONF=/etc/fluent/fluentd.conf
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+
+- name: Enable and start Fluentd service
+  systemd:
+    name: fluentd
+    state: started
+    enabled: yes

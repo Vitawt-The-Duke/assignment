@@ -1,0 +1,33 @@
+---
+- name: Stop Fluentd service if running
+  service:
+    name: fluentd
+    state: stopped
+  ignore_errors: true
+
+- name: Remove Fluentd package
+  apt:
+    name: fluentd
+    state: absent
+  ignore_errors: true
+
+- name: Remove Fluentd directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/fluent
+    - /var/log/fluent
+    - /opt/fluent
+    - /var/lib/fluent
+  ignore_errors: true
+
+- name: Remove Fluentd systemd service file
+  file:
+    path: /lib/systemd/system/fluentd.service
+    state: absent
+  ignore_errors: true
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+  ignore_errors: true

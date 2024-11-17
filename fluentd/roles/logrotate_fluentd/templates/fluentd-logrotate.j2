@@ -1,0 +1,13 @@
+/var/log/fluent/*.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 {{ ansible_user }} adm
+    sharedscripts
+    postrotate
+        systemctl reload fluentd > /dev/null 2>&1 || true
+    endscript
+}

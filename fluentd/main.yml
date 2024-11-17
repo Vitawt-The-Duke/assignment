@@ -1,0 +1,28 @@
+---
+- name: Cleanup Fluentd
+  hosts: all
+  become: true
+  roles:
+    - cleanup_fluentd
+  tags: cleanup
+
+- name: Install Fluentd
+  hosts: all
+  become: true
+  roles:
+    - install_fluentd
+  tags: install
+
+- name: Configure Fluentd
+  hosts: all
+  become: true
+  roles:
+    - configure_fluentd
+  tags: configure
+
+- name: Configure logrotate
+  hosts: all
+  become: true
+  roles:
+    - logrotate_fluentd
+  tags: logrotate

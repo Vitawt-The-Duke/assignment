@@ -1,0 +1,25 @@
+---
+- name: Ensure logrotate is installed
+  apt:
+    name: logrotate
+    state: present
+  become: true
+
+- name: Create logrotate configuration for Fluentd
+  template:
+    src: fluentd-logrotate.j2
+    dest: /etc/logrotate.d/fluentd
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Test logrotate configuration
+  command: logrotate --debug /etc/logrotate.d/fluentd
+  register: logrotate_test
+  changed_when: false
+  become: true
+
+- name: Debug logrotate test output
+  debug:
+    var: logrotate_test.stdout

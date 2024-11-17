@@ -1,0 +1,5 @@
+[all]
+Lighthouse ansible_host=103.167.235.61 ansible_port=45000 ansible_user=igogo
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

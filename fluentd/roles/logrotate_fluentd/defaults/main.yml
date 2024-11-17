@@ -1,0 +1,4 @@
+fluentd_log_path: "/var/log/fluent/*.log"
+fluentd_rotate_frequency: "daily"
+fluentd_rotate_count: 7
+fluentd_compress_logs: true
