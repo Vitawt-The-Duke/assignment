@@ -9,6 +9,13 @@ resource "aws_security_group" "nginx_sg" {
     cidr_blocks = ["0.0.0.0/0"]           # Allow traffic from any IP address
   }
 
+  ingress {
+    from_port   = 22                      # Allow incoming traffic on port 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["99.99.99.99/32"]      # Strict traffic for jumphost IP address
+  }
+
   egress {
     from_port   = 0                       # Allow all outgoing traffic
     to_port     = 0
