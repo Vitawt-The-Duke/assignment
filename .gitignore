@@ -49,3 +49,6 @@ terraform.rc
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# mac
+.DS_Store
