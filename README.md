@@ -35,7 +35,7 @@ BloxRoute/
 │   ├── provider.tf
 │   ├── variables.tf           # Configuration variables for Terraform
 │   └── terraform.tfstate      # Terraform state file (not included in version control)
-|---ASSIGNMENT.md              # Documentation for Assignment 1 extra part
+|---ASSIGNMENT.md              # Documentation for Assignment 1
 ├── ASSIGNMENT1.md             # Documentation for Assignment 1 extra part
 ├── ASSIGNMENT2.md             # Documentation for Assignment 2
 ├── ASSIGNMENT3.md             # Documentation for Assignment 3
