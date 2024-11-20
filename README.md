@@ -1,5 +1,5 @@
 
-# BloxRoute Repository
+# assignment Repository
 
 ## Overview
 
@@ -10,7 +10,7 @@ This repository contains solutions to three take-home assignments that cover a r
 ## Repository Structure
 
 ```
-BloxRoute/
+assignment/
 ├── evidence/                  # Screenshots and logs for completed tasks
 │   ├── assignment_1/          # Evidence for Assignment 1
 │   ├── assignment_2/          # Evidence for Assignment 2
@@ -95,7 +95,7 @@ BloxRoute/
 1. Clone the repository:
    ```bash
    git clone <repository_url>
-   cd BloxRoute
+   cd assignment
    ```
 2. Follow the individual assignment instructions in `ASSIGNMENT1.md`, `ASSIGNMENT2.md`, and `ASSIGNMENT3.md`.
 3. Check the `evidence/` folder for task outputs and logs.
